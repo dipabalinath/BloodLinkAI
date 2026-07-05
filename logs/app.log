@@ -1,0 +1,21 @@
+2026-07-05 21:10:34 - BloodLinkAI - INFO - BloodLink AI Started
+2026-07-05 21:12:06 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\database/bloodlink.db
+2026-07-05 21:12:07 - BloodLinkAI - INFO - Database connection closed.
+2026-07-05 21:14:49 - BloodLinkAI - INFO - Starting BloodLink AI initialization...
+2026-07-05 21:14:49 - BloodLinkAI - INFO - Initializing DatabaseManager...
+2026-07-05 21:14:49 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\database/bloodlink.db
+2026-07-05 21:14:49 - BloodLinkAI - INFO - Database connected successfully.
+2026-07-05 21:14:49 - BloodLinkAI - INFO - System initialized. AI agents are currently disabled/pending implementation.
+2026-07-05 21:14:49 - BloodLinkAI - INFO - Main execution flow finished successfully.
+2026-07-05 21:14:49 - BloodLinkAI - INFO - Cleaning up resources...
+2026-07-05 21:14:49 - BloodLinkAI - INFO - Database connection closed.
+2026-07-05 21:14:49 - BloodLinkAI - INFO - BloodLink AI shutdown complete.
+2026-07-05 21:16:46 - BloodLinkAI - INFO - Starting BloodLink AI initialization...
+2026-07-05 21:16:46 - BloodLinkAI - INFO - Initializing DatabaseManager...
+2026-07-05 21:16:46 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\database/bloodlink.db
+2026-07-05 21:16:46 - BloodLinkAI - INFO - Database connected successfully.
+2026-07-05 21:16:46 - BloodLinkAI - INFO - System initialized. AI agents are currently disabled/pending implementation.
+2026-07-05 21:16:46 - BloodLinkAI - INFO - Main execution flow finished successfully.
+2026-07-05 21:16:46 - BloodLinkAI - INFO - Cleaning up resources...
+2026-07-05 21:16:46 - BloodLinkAI - INFO - Database connection closed.
+2026-07-05 21:16:46 - BloodLinkAI - INFO - BloodLink AI shutdown complete.

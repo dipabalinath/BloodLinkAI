@@ -1,0 +1,9 @@
+[tool.poetry]
+name = "bloodlink-ai"
+version = "0.1.0"
+description = "BloodLink AI Project using Google ADK"
+authors = ["Author"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
