@@ -5,7 +5,7 @@ Determines the best hospital and inventory options using Google GenAI SDK and Re
 
 import os
 import json
-import google.generativeai as genai
+from utils import ai_client
 from typing import Dict, Any, Optional
 from agents.prompts import RECOMMENDATION_AGENT_PROMPT
 from skills.recommendation_skill import RecommendationSkill
@@ -16,13 +16,6 @@ class RecommendationAgent:
         """Initialize the Recommendation Agent with Google GenAI and RecommendationSkill."""
         self.prompt = RECOMMENDATION_AGENT_PROMPT
         self.recommendation_skill = RecommendationSkill()
-        
-        # Configure Google GenAI SDK
-        api_key = os.getenv("GEMINI_API_KEY")
-        if api_key:
-            genai.configure(api_key=api_key)
-        else:
-            logger.warning("GEMINI_API_KEY not found in environment variables.")
 
     def execute(
         self, 
@@ -56,11 +49,6 @@ class RecommendationAgent:
             }
                 
             # 2. Use LLM to analyze the findings and structure the JSON response
-            model = genai.GenerativeModel(
-                model_name="gemini-3.5-flash",
-                system_instruction=self.prompt
-            )
-            
             analysis_prompt = (
                 f"User Request: '{user_request}'\n\n"
                 f"Recommendation Skill Output: {json.dumps(skill_result)}\n\n"
@@ -78,8 +66,11 @@ class RecommendationAgent:
                 "Return ONLY the JSON string. Do not include markdown formatting like ```json."
             )
             
-            response = model.generate_content(analysis_prompt)
-            response_text = response.text.strip()
+            response_text = ai_client.generate(
+                prompt=analysis_prompt,
+                agent_name="recommendation",
+                system_instruction=self.prompt
+            ).strip()
             
             # Clean up potential markdown formatting from LLM
             if response_text.startswith("```json"):

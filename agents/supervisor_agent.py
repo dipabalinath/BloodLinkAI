@@ -4,7 +4,7 @@ Orchestrates requests by delegating to specialized sub-agents using Google GenAI
 """
 
 import os
-import google.generativeai as genai
+from utils import ai_client
 from typing import Dict, Any, List
 from agents.prompts import SUPERVISOR_PROMPT
 from utils.logger import logger
@@ -13,14 +13,7 @@ class SupervisorAgent:
     def __init__(self):
         """Initialize the Supervisor Agent and configure Google GenAI."""
         self.prompt = SUPERVISOR_PROMPT
-        
-        # Configure Google GenAI SDK
-        api_key = os.getenv("GEMINI_API_KEY")
-        if api_key:
-            genai.configure(api_key=api_key)
-        else:
-            logger.warning("GEMINI_API_KEY not found in environment variables.")
-            
+        self.prompt = SUPERVISOR_PROMPT
         # In a complete implementation, sub-agents would be instantiated here:
         # self.inventory_agent = InventoryAgent()
         # self.eligibility_agent = EligibilityAgent()
@@ -37,11 +30,6 @@ class SupervisorAgent:
         
         try:
             # 1. Understand Intent and Delegate
-            model = genai.GenerativeModel(
-               model_name="gemini-3.5-flash",
-                system_instruction=self.prompt
-            )
-            
             routing_prompt = (
                 f"User Request: {user_request}\n\n"
                 "Analyze the request and determine which of the following agents must be called: "
@@ -49,8 +37,12 @@ class SupervisorAgent:
                 "Return a comma-separated list of the required agent names. Do not include any other text."
             )
             
-            routing_response = model.generate_content(routing_prompt)
-            agents_to_call = [a.strip().lower() for a in routing_response.text.split(',')]
+            routing_response_text = ai_client.generate(
+                prompt=routing_prompt,
+                agent_name="supervisor",
+                system_instruction=self.prompt
+            )
+            agents_to_call = [a.strip().lower() for a in routing_response_text.split(',')]
             
             reasoning = (
                 f"Analyzed the request: '{user_request}'. "
@@ -75,13 +67,17 @@ class SupervisorAgent:
                 "Ensure the tone is professional and suitable for hospital staff."
             )
             
-            final_result = model.generate_content(consolidation_prompt)
+            final_result_text = ai_client.generate(
+                prompt=consolidation_prompt,
+                agent_name="supervisor",
+                system_instruction=self.prompt
+            )
             
             return {
                 "status": "Success",
                 "workflow_reasoning": reasoning,
                 "delegated_data": delegated_responses,
-                "final_answer": final_result.text
+                "final_answer": final_result_text
             }
             
         except Exception as e:

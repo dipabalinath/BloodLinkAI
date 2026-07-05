@@ -24,6 +24,7 @@ class Settings:
     APP_ENV: str
     DEBUG: bool
     LOG_LEVEL: str
+    USE_MOCK_AI: bool
 
     # Domain specific settings
     DEFAULT_SEARCH_RADIUS: int
@@ -44,6 +45,7 @@ class Settings:
         self.APP_ENV = os.getenv("APP_ENV", "development")
         self.DEBUG = self._get_bool_env("DEBUG", True)
         self.LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+        self.USE_MOCK_AI = self._get_bool_env("USE_MOCK_AI", True)
         
         self.DEFAULT_SEARCH_RADIUS = self._get_int_env("DEFAULT_SEARCH_RADIUS", 20)
         self.LOW_STOCK_THRESHOLD = self._get_int_env("LOW_STOCK_THRESHOLD", 10)

@@ -3,13 +3,25 @@ Test script for BloodLink AI Agents.
 Tests end-to-end execution of agents via the Orchestrator and individual testing.
 """
 
+import sys
+from config.settings import settings
 from agents.agent_factory import get_agents
 from agents.orchestrator import BloodLinkOrchestrator
 from utils.logger import logger
 
 def run_tests():
-    print("--- Starting BloodLink AI Agents Test ---")
+    if settings.USE_MOCK_AI:
+        print("==================================")
+        print("BloodLink AI Test")
+        print("MOCK MODE")
+        print("==================================")
+    else:
+        print("==================================")
+        print("BloodLink AI Test")
+        print("LIVE GEMINI MODE")
+        print("==================================")
     
+    logger.info(f"Starting tests in {'MOCK' if settings.USE_MOCK_AI else 'LIVE GEMINI'} mode.")
     # Instantiate all agents
     agents = get_agents()
     orchestrator = BloodLinkOrchestrator()
@@ -139,4 +151,8 @@ def run_tests():
         print("OVERALL RESULT: SOME TESTS FAILED.")
 
 if __name__ == "__main__":
+    if "--live" in sys.argv:
+        settings.USE_MOCK_AI = False
+    else:
+        settings.USE_MOCK_AI = True
     run_tests()

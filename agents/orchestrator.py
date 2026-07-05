@@ -5,7 +5,7 @@ Manages the end-to-end workflow from User Request to Final Answer.
 
 import os
 import json
-import google.generativeai as genai
+from utils import ai_client
 from typing import Dict, Any, List
 from agents.agent_factory import get_agents
 from utils.logger import logger
@@ -16,14 +16,6 @@ class BloodLinkOrchestrator:
         logger.info("Initializing BloodLink Orchestrator...")
         self.agents = get_agents()
         self.supervisor = self.agents.get("supervisor")
-        
-        # Ensure Google GenAI SDK is configured
-        api_key = os.getenv("GEMINI_API_KEY")
-        if api_key:
-            genai.configure(api_key=api_key)
-        else:
-            logger.warning("GEMINI_API_KEY not found in environment variables.")
-            
     def process_request(self, user_request: str, context_params: Dict[str, Any] = None) -> Dict[str, Any]:
         """
         End-to-end workflow:
@@ -37,11 +29,6 @@ class BloodLinkOrchestrator:
             # 1. Supervisor Agent Routing
             logger.info("Step 1: Passing request to Supervisor for delegation routing.")
             
-            model = genai.GenerativeModel(
-                model_name="gemini-3.5-flash",
-                system_instruction=self.supervisor.prompt
-            )
-            
             routing_prompt = (
                 f"User Request: '{user_request}'\n\n"
                 "Analyze the request and determine which of the following agents must be called: "
@@ -49,8 +36,21 @@ class BloodLinkOrchestrator:
                 "Return a comma-separated list of the required agent names. Do not include any other text."
             )
             
-            routing_res = model.generate_content(routing_prompt)
-            agents_to_call = [a.strip().lower() for a in routing_res.text.split(',')]
+            routing_res_text = ai_client.generate(
+                prompt=routing_prompt,
+                agent_name="supervisor",
+                system_instruction=self.supervisor.prompt
+            )
+            
+            if isinstance(routing_res_text, dict):
+                agents_to_call = routing_res_text.get("delegated_agents", [])
+            else:
+                try:
+                    parsed = json.loads(routing_res_text)
+                    agents_to_call = parsed.get("delegated_agents", [])
+                except (json.JSONDecodeError, TypeError, AttributeError):
+                    agents_to_call = [a.strip().lower() for a in routing_res_text.split(',')]
+                    
             logger.info(f"Supervisor delegated to: {agents_to_call}")
             
             # 2. Delegate to Specialized Agents
@@ -129,7 +129,20 @@ class BloodLinkOrchestrator:
                 "3. Explain the reasoning behind the final answer in a clear, staff-friendly format.\n"
             )
             
-            final_result = model.generate_content(consolidation_prompt)
+            final_result_text = ai_client.generate(
+                prompt=consolidation_prompt,
+                agent_name="supervisor",
+                system_instruction=self.supervisor.prompt
+            )
+            
+            if isinstance(final_result_text, dict):
+                final_answer = final_result_text.get("final_answer", str(final_result_text))
+            else:
+                try:
+                    parsed = json.loads(final_result_text)
+                    final_answer = parsed.get("final_answer", final_result_text)
+                except (json.JSONDecodeError, TypeError, AttributeError):
+                    final_answer = final_result_text
             
             logger.info("Orchestrator workflow complete.")
             return {
@@ -137,7 +150,7 @@ class BloodLinkOrchestrator:
                 "user_request": user_request,
                 "agents_involved": agents_to_call,
                 "agent_data": agent_responses,
-                "final_answer": final_result.text
+                "final_answer": final_answer
             }
             
         except Exception as e:
