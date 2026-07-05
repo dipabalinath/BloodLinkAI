@@ -1,0 +1,21 @@
+name,facility_type,address,city,latitude,longitude,phone,email,operating_hours,service_radius_km
+Medical College and Hospital,Medical College,88 College Street,Kolkata,22.5735,88.3631,033-2253-5000,info@medicalcollegekolkata.in,24/7,30
+SSKM Hospital,Medical College,242 AJC Bose Road,Kolkata,22.5398,88.3444,033-2223-9900,sskm@wbhealth.gov.in,24/7,35
+Apollo Multispeciality Hospitals,Hospital,58 Canal Circular Road,Kolkata,22.5746,88.4011,033-2320-3040,info@apollohospitals.com,24/7,25
+AMRI Hospitals Dhakuria,Hospital,P-4&5 Gariahat Road,Kolkata,22.5085,88.3642,033-6628-6628,contact@amrihospitals.in,24/7,20
+Fortis Hospital Anandapur,Hospital,730 Anandapur EM Bypass,Kolkata,22.5152,88.4034,033-6628-4444,contactus@fortishealthcare.com,24/7,25
+Ruby General Hospital,Hospital,Kasba Golpark EM Bypass,Kolkata,22.5113,88.4026,033-3987-1800,info@rubyhospital.com,24/7,20
+Peerless Hospital,Hospital,360 Panchasayar,Kolkata,22.4828,88.3976,033-4011-1222,info@peerlesshospital.com,24/7,20
+Manipal Hospitals Salt Lake,Hospital,IB-193 Sector III Salt Lake,Kolkata,22.5701,88.4116,033-6600-3300,saltlake@manipalhospitals.com,24/7,15
+CMRI,Hospital,7/2 Diamond Harbour Road,Kolkata,22.5323,88.3242,033-4090-4090,info@cmri.in,24/7,20
+Woodlands Multispeciality Hospital,Hospital,8A Alipore Road,Kolkata,22.5295,88.3304,033-4033-7000,info@woodlandshospital.in,24/7,20
+R. G. Kar Medical College,Medical College,1 Khudiram Bose Sarani,Kolkata,22.6041,88.3802,033-2530-4557,principal_rgk@wbhealth.gov.in,24/7,30
+NRS Medical College,Medical College,138 AJC Bose Road,Kolkata,22.5637,88.3687,033-2286-0033,support@nrsmc.edu.in,24/7,30
+Central Blood Bank Maniktala,Blood Bank,204 Main Road Maniktala,Kolkata,22.5855,88.3755,033-2351-0619,bloodbank@wbhealth.gov.in,24/7,40
+Lions Blood Bank,Blood Bank,18/1 Sarat Bose Road,Kolkata,22.5369,88.3514,033-2475-4321,info@lionsbloodbank.org,08:00-20:00,15
+Project Life Force,NGO,Deshapriya Park,Kolkata,22.5190,88.3533,033-2465-1122,donate@projectlifeforce.org,09:00-18:00,20
+Association of Voluntary Blood Donors,NGO,20A Fordyce Lane,Kolkata,22.5623,88.3644,033-2227-1111,contact@avbd.org,09:00-18:00,25
+Chittaranjan National Cancer Institute,Hospital,37 SP Mukherjee Road,Kolkata,22.5222,88.3473,033-2474-3240,info@cnci.org.in,24/7,25
+B. P. Poddar Hospital,Hospital,71/1 Humayun Kabir Sarani,Kolkata,22.4965,88.3262,033-4022-4022,contact@bppoddarhospital.com,24/7,15
+Belle Vue Clinic,Hospital,9 Dr U N Brahmachari Street,Kolkata,22.5412,88.3537,033-2287-2321,info@bellevueclinic.com,24/7,20
+Desun Hospital,Hospital,720 Anandapur EM Bypass,Kolkata,22.5140,88.4030,033-7122-2000,info@desunhospital.com,24/7,30

@@ -19,3 +19,86 @@
 2026-07-05 21:16:46 - BloodLinkAI - INFO - Cleaning up resources...
 2026-07-05 21:16:46 - BloodLinkAI - INFO - Database connection closed.
 2026-07-05 21:16:46 - BloodLinkAI - INFO - BloodLink AI shutdown complete.
+2026-07-05 21:53:33 - BloodLinkAI - INFO - Reading schema.sql...
+2026-07-05 21:53:33 - BloodLinkAI - INFO - Connecting to database...
+2026-07-05 21:53:33 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 21:53:33 - BloodLinkAI - INFO - Foreign keys enabled.
+2026-07-05 21:53:33 - BloodLinkAI - INFO - Executing schema to create tables...
+2026-07-05 21:53:34 - BloodLinkAI - INFO - Database initialization successful! All tables created.
+2026-07-05 21:53:34 - BloodLinkAI - INFO - Database connection closed.
+2026-07-05 21:57:22 - BloodLinkAI - INFO - Reading schema.sql...
+2026-07-05 21:57:22 - BloodLinkAI - INFO - Connecting to database...
+2026-07-05 21:57:22 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 21:57:22 - BloodLinkAI - INFO - Foreign keys enabled.
+2026-07-05 21:57:22 - BloodLinkAI - INFO - Executing schema to create tables...
+2026-07-05 21:57:22 - BloodLinkAI - ERROR - Failed to initialize database: table HealthcareFacility already exists
+2026-07-05 21:57:22 - BloodLinkAI - INFO - Database connection closed.
+2026-07-05 21:58:54 - BloodLinkAI - INFO - Reading schema.sql...
+2026-07-05 21:58:54 - BloodLinkAI - INFO - Connecting to database...
+2026-07-05 21:58:54 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 21:58:54 - BloodLinkAI - INFO - Foreign keys enabled.
+2026-07-05 21:58:54 - BloodLinkAI - INFO - Executing schema to create tables...
+2026-07-05 21:58:54 - BloodLinkAI - INFO - Database initialization successful! All tables created.
+2026-07-05 21:58:54 - BloodLinkAI - INFO - Database connection closed.
+2026-07-05 22:03:02 - BloodLinkAI - INFO - Connecting to database for verification...
+2026-07-05 22:03:02 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:03:02 - BloodLinkAI - INFO - --- Tables found in Database ---
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - AgentDecisionLog
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - BloodInventory
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - BloodRequest
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - DonationHistory
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - Donor
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - DonorNotificationResponse
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - EmergencyEvent
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - HealthcareFacility
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - InventoryAudit
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - Notification
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - Patient
+2026-07-05 22:03:02 - BloodLinkAI - INFO - - Reservation
+2026-07-05 22:03:02 - BloodLinkAI - INFO - Total number of tables found: 12
+2026-07-05 22:03:02 - BloodLinkAI - INFO - Database verification successful.
+2026-07-05 22:03:02 - BloodLinkAI - INFO - Database connection closed.
+2026-07-05 22:13:07 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:13:07 - BloodLinkAI - INFO - Database connection closed.
+2026-07-05 22:18:18 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:32:23 - BloodLinkAI - INFO - Tool called: find_inventory(O+, Packed RBC, 2)
+2026-07-05 22:32:23 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:32:23 - BloodLinkAI - INFO - Tool called: find_eligible_donors(O+)
+2026-07-05 22:32:23 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:32:23 - BloodLinkAI - INFO - Tool called: get_pending_requests()
+2026-07-05 22:32:23 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:32:23 - BloodLinkAI - INFO - Tool called: get_low_stock()
+2026-07-05 22:32:23 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:32:23 - BloodLinkAI - INFO - Tool called: dashboard()
+2026-07-05 22:32:23 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:51:45 - BloodLinkAI - INFO - [INVENTORY_SEARCH] Requested: O+ Packed RBC, Min Units: 2
+2026-07-05 22:51:45 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:51:45 - BloodLinkAI - INFO - [INVENTORY_SEARCH] Found 40 matching inventory records.
+2026-07-05 22:51:45 - BloodLinkAI - INFO - Tool called: find_eligible_donors(O+)
+2026-07-05 22:51:45 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:51:45 - BloodLinkAI - INFO - Tool called: get_pending_requests()
+2026-07-05 22:51:45 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:51:45 - BloodLinkAI - INFO - [LOW_STOCK_REPORT] Fetching low stock inventory.
+2026-07-05 22:51:45 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:51:45 - BloodLinkAI - INFO - [LOW_STOCK_REPORT] Found 90 inventory items below threshold.
+2026-07-05 22:51:45 - BloodLinkAI - INFO - Tool called: dashboard()
+2026-07-05 22:51:45 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:52:58 - BloodLinkAI - INFO - Initializing BloodLink MCP (v1.0) MCP Server...
+2026-07-05 22:52:58 - BloodLinkAI - INFO - Successfully loaded 36 tools into FastMCP.
+2026-07-05 22:52:58 - BloodLinkAI - INFO - Starting MCP Server on 127.0.0.1:8001
+2026-07-05 22:52:58 - BloodLinkAI - ERROR - Failed to start MCP server: FastMCP.run() got an unexpected keyword argument 'host'
+2026-07-05 22:59:04 - BloodLinkAI - INFO - [INVENTORY_SEARCH] Requested: O+ Packed RBC, Min Units: 2
+2026-07-05 22:59:04 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:59:04 - BloodLinkAI - INFO - [INVENTORY_SEARCH] Found 40 matching inventory records.
+2026-07-05 22:59:04 - BloodLinkAI - INFO - Tool called: find_eligible_donors(O+)
+2026-07-05 22:59:04 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:59:04 - BloodLinkAI - INFO - Tool called: get_pending_requests()
+2026-07-05 22:59:04 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:59:04 - BloodLinkAI - INFO - [LOW_STOCK_REPORT] Fetching low stock inventory.
+2026-07-05 22:59:04 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:59:04 - BloodLinkAI - INFO - [LOW_STOCK_REPORT] Found 90 inventory items below threshold.
+2026-07-05 22:59:04 - BloodLinkAI - INFO - Tool called: dashboard()
+2026-07-05 22:59:04 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 22:59:20 - BloodLinkAI - INFO - Initializing BloodLink MCP (v1.0) MCP Server...
+2026-07-05 22:59:20 - BloodLinkAI - INFO - Successfully loaded 36 tools into FastMCP.
+2026-07-05 22:59:20 - BloodLinkAI - INFO - Starting BloodLink MCP Server using STDIO transport...
