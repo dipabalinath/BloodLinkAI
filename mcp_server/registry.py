@@ -63,3 +63,5 @@ class ToolRegistry:
 
 # Global registry instance to automatically register tools
 registry = ToolRegistry()
+# Auto-load all MCP tools
+import mcp_server.tools
