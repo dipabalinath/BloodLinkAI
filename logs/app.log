@@ -102,3 +102,9 @@
 2026-07-05 22:59:20 - BloodLinkAI - INFO - Initializing BloodLink MCP (v1.0) MCP Server...
 2026-07-05 22:59:20 - BloodLinkAI - INFO - Successfully loaded 36 tools into FastMCP.
 2026-07-05 22:59:20 - BloodLinkAI - INFO - Starting BloodLink MCP Server using STDIO transport...
+2026-07-05 23:18:16 - BloodLinkAI - INFO - Evaluating clinical condition: birthing mother with active hemorrhage | 
+2026-07-05 23:18:16 - BloodLinkAI - INFO - Generating recommendations for O- Packed RBC
+2026-07-05 23:18:16 - BloodLinkAI - ERROR - Error in recommend_inventory: "Tool 'find_best_inventory' is not registered."
+2026-07-05 23:18:16 - BloodLinkAI - INFO - Preparing notification for O+ at General Hospital
+2026-07-05 23:18:16 - BloodLinkAI - INFO - Connected to SQLite database at D:\BloodLinkAI\projects\bloodlink-ai\data/bloodlink.db
+2026-07-05 23:18:16 - BloodLinkAI - INFO - Explaining priority decision.
