@@ -64,10 +64,13 @@ class BloodQueries:
 
     def get_low_stock_inventory(self) -> List[Dict[str, Any]]:
         query = """
-            SELECT bi.*, hf.name as facility_name 
+            SELECT 
+                hf.name as facility_name, hf.address as facility_address, hf.city, hf.phone,
+                bi.blood_group, bi.component_type, bi.units_available, bi.minimum_threshold, bi.expiry_date
             FROM BloodInventory bi
             JOIN HealthcareFacility hf ON bi.facility_id = hf.id
             WHERE bi.units_available <= bi.minimum_threshold
+            ORDER BY bi.units_available ASC
         """
         return self._execute_read(query)
 

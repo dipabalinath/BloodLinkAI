@@ -24,7 +24,8 @@ class RecommendationAgent:
         component_type: str,
         latitude: float,
         longitude: float,
-        required_units: int
+        required_units: int,
+        context_params: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Process a recommendation request via RecommendationSkill and LLM analysis.
@@ -58,9 +59,8 @@ class RecommendationAgent:
                 "Explain the reasoning based on Distance, Inventory availability, Expiry dates, and Compatibility.\n"
                 "IMPORTANT: Your output MUST be a valid JSON object matching the following structure exactly:\n"
                 "{\n"
-                '  "top_recommendation": {"facility": "Name", "blood_group": "A+", "units": 2},\n'
-                '  "alternatives": [{"facility": "Name", "blood_group": "A+", "units": 1}],\n'
-                '  "reasoning": "Detailed explanation of why the top recommendation was chosen over alternatives"\n'
+                '  "status": "Success",\n'
+                '  "recommendation": "Detailed explanation of why the top recommendation was chosen over alternatives"\n'
                 "}\n"
                 "If no options exist, set top_recommendation and alternatives to null/empty and explain why.\n"
                 "Return ONLY the JSON string. Do not include markdown formatting like ```json."
@@ -69,7 +69,8 @@ class RecommendationAgent:
             response_text = ai_client.generate(
                 prompt=analysis_prompt,
                 agent_name="recommendation",
-                system_instruction=self.prompt
+                system_instruction=self.prompt,
+                context_params=context_params
             ).strip()
             
             # Clean up potential markdown formatting from LLM
@@ -85,14 +86,12 @@ class RecommendationAgent:
         except json.JSONDecodeError as e:
             logger.error(f"Recommendation Agent failed to parse LLM JSON: {e}\nResponse text: {response_text}")
             return {
-                "top_recommendation": None,
-                "alternatives": [],
-                "reasoning": "Failed to generate structured JSON."
+                "status": "Error",
+                "recommendation": "Failed to generate structured JSON."
             }
         except Exception as e:
             logger.error(f"Recommendation Agent encountered an error: {e}", exc_info=True)
             return {
-                "top_recommendation": None,
-                "alternatives": [],
-                "reasoning": f"Internal agent error: {str(e)}"
+                "status": "Error",
+                "recommendation": f"Internal agent error: {str(e)}"
             }

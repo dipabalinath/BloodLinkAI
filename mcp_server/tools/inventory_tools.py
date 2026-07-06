@@ -49,7 +49,22 @@ def find_inventory(blood_group: str, component_type: str, minimum_units: int, al
             
         placeholders = ', '.join(['?'] * len(target_groups))
         query = f"""
-            SELECT bi.*, hf.name as facility_name 
+            SELECT 
+                bi.id,
+                hf.name AS facility_name,
+                hf.address AS facility_address,
+                hf.city,
+                bi.blood_group,
+                bi.component_type,
+                bi.units_available,
+                bi.reserved_units,
+                bi.collection_date,
+                bi.expiry_date,
+                bi.minimum_threshold,
+                bi.storage_location,
+                bi.batch_number,
+                hf.phone,
+                hf.contact_person
             FROM BloodInventory bi
             JOIN HealthcareFacility hf ON bi.facility_id = hf.id
             WHERE bi.blood_group IN ({placeholders}) 
@@ -57,7 +72,8 @@ def find_inventory(blood_group: str, component_type: str, minimum_units: int, al
               AND bi.units_available >= ?
             ORDER BY 
               CASE WHEN bi.blood_group = ? THEN 1 ELSE 2 END,
-              bi.units_available DESC
+              bi.units_available DESC,
+              bi.expiry_date ASC
         """
         
         params = tuple(target_groups) + (component_type, minimum_units, blood_group)
@@ -99,40 +115,52 @@ def reserve_units(inventory_id: int, units: int) -> Dict[str, Any]:
         return {"status": "error", "message": f"Database error occurred: {str(e)}"}
 
 @registry.register()
-def release_reservation(reservation_id: int) -> Dict[str, Any]:
+def release_reservation(request_id: int) -> Dict[str, Any]:
     """
-    Release reserved units back into available inventory based on reservation ID.
+    Release reserved units back into available inventory based on Blood Request ID.
     
     Args:
-        reservation_id (int): ID of the Reservation record.
+        request_id (int): ID of the BloodRequest.
         
     Returns:
-        Dict[str, Any]: JSON dict containing the operation status.
+        Dict[str, Any]: JSON dict containing the operation status, released_count, and units_restored.
     """
-    logger.info(f"[RELEASE_RESERVATION] Releasing reservation ID: {reservation_id}")
+    logger.info(f"[RELEASE_RESERVATION] Releasing reservations for Request ID: {request_id}")
     try:
         db = DatabaseManager()
         with db.connect() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT inventory_id, reserved_units FROM Reservation WHERE id = ?", (reservation_id,))
-            row = cursor.fetchone()
+            cursor.execute("SELECT id, inventory_id, reserved_units FROM Reservation WHERE request_id = ? AND status = 'Active'", (request_id,))
+            rows = cursor.fetchall()
             
-            if not row:
-                logger.warning(f"[RELEASE_RESERVATION] Reservation {reservation_id} not found.")
-                return {"status": "error", "message": "Reservation not found."}
+            if not rows:
+                logger.warning(f"[RELEASE_RESERVATION] No active reservations found for Request {request_id}.")
+                return {"status": "error", "message": "No active reservations found for this Request ID."}
                 
-            inventory_id = row['inventory_id']
-            units = row['reserved_units']
+            released_count = 0
+            units_restored = 0
             
-            success = queries.release_reserved_units(inventory_id, units)
-            if success:
-                cursor.execute("UPDATE Reservation SET status = 'Released' WHERE id = ?", (reservation_id,))
-                conn.commit()
-                logger.info(f"[RELEASE_RESERVATION] Successfully released {units} units for reservation {reservation_id}.")
-                return {"status": "success", "message": f"Successfully released {units} units for reservation {reservation_id}"}
+            for row in rows:
+                res_id = row['id']
+                inv_id = row['inventory_id']
+                units = row['reserved_units']
+                
+                success = queries.release_reserved_units(inv_id, units)
+                if success:
+                    cursor.execute("UPDATE Reservation SET status = 'Released' WHERE id = ?", (res_id,))
+                    released_count += 1
+                    units_restored += units
+                    logger.info(f"[RELEASE_RESERVATION] Successfully released {units} units for reservation {res_id}.")
+                else:
+                    logger.error(f"[RELEASE_RESERVATION] Failed to release {units} units in inventory {inv_id}.")
             
-            logger.error(f"[RELEASE_RESERVATION] Failed to release units in inventory {inventory_id}.")
-            return {"status": "error", "message": "Failed to release units in inventory."}
+            conn.commit()
+            
+            if released_count > 0:
+                msg = f"Successfully released {released_count} reservation(s), restoring {units_restored} units."
+                return {"status": "success", "message": msg, "released_count": released_count, "units_restored": units_restored}
+            else:
+                return {"status": "error", "message": "Failed to release units."}
     except Exception as e:
         logger.error(f"[RELEASE_RESERVATION] Error: {str(e)}", exc_info=True)
         return {"status": "error", "message": f"Database error occurred: {str(e)}"}

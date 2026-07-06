@@ -6,7 +6,7 @@ Manages donor outreach using Google GenAI SDK and NotificationSkill.
 import os
 import json
 from utils import ai_client
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from agents.prompts import NOTIFICATION_AGENT_PROMPT
 from skills.notification_skill import NotificationSkill
 from mcp_server.registry import registry
@@ -24,7 +24,8 @@ class NotificationAgent:
         blood_group: str,
         urgency: str,
         location: str,
-        inventory_available: bool = False
+        inventory_available: bool = False,
+        context_params: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Process a notification request via NotificationSkill and LLM analysis.
@@ -82,10 +83,10 @@ class NotificationAgent:
                 "IMPORTANT: Your output MUST be a valid JSON object matching the following structure exactly:\n"
                 "{\n"
                 '  "status": "Success",\n'
-                '  "donors_notified": 5,\n'
-                '  "sample_sms": "The generated SMS text",\n'
-                '  "sample_email": "The generated Email text",\n'
-                '  "summary": "Detailed explanation of the outreach campaign"\n'
+                '  "notification_required": true,\n'
+                '  "target_facility": "Facility Name",\n'
+                '  "blood_group": "O-",\n'
+                '  "message": "Detailed explanation of the outreach campaign"\n'
                 "}\n"
                 "Return ONLY the JSON string. Do not include markdown formatting like ```json."
             )
@@ -93,7 +94,8 @@ class NotificationAgent:
             response_text = ai_client.generate(
                 prompt=analysis_prompt,
                 agent_name="notification",
-                system_instruction=self.prompt
+                system_instruction=self.prompt,
+                context_params=context_params
             ).strip()
             
             # Clean up potential markdown formatting from LLM
@@ -110,17 +112,17 @@ class NotificationAgent:
             logger.error(f"Notification Agent failed to parse LLM JSON: {e}\nResponse text: {response_text}")
             return {
                 "status": "Error",
-                "donors_notified": 0,
-                "sample_sms": "",
-                "sample_email": "",
-                "summary": "Failed to generate structured JSON."
+                "notification_required": False,
+                "target_facility": "",
+                "blood_group": "",
+                "message": "Failed to generate structured JSON."
             }
         except Exception as e:
             logger.error(f"Notification Agent encountered an error: {e}", exc_info=True)
             return {
                 "status": "Error",
-                "donors_notified": 0,
-                "sample_sms": "",
-                "sample_email": "",
-                "summary": f"Internal agent error: {str(e)}"
+                "notification_required": False,
+                "target_facility": "",
+                "blood_group": "",
+                "message": f"Internal agent error: {str(e)}"
             }

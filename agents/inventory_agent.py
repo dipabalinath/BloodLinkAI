@@ -25,7 +25,8 @@ class InventoryAgent:
         component_type: Optional[str] = "Packed RBC",
         latitude: Optional[float] = None,
         longitude: Optional[float] = None,
-        required_units: int = 1
+        required_units: int = 1,
+        context_params: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Process an inventory-related request, call MCP tools, and use RecommendationSkill.
@@ -63,6 +64,13 @@ class InventoryAgent:
                     "options": rec_result.metadata.get("options", [])
                 }
 
+            if context_params is None:
+                context_params = {}
+                
+            context_params["raw_inventory"] = raw_inventory
+            if recommendation_data:
+                context_params["recommendation_data"] = recommendation_data
+
             # 3. Use LLM to analyze the findings and structure the JSON response
             analysis_prompt = (
                 f"User Request: '{user_request}'\n\n"
@@ -76,7 +84,17 @@ class InventoryAgent:
                 '  "status": "Success",\n'
                 '  "summary": "High level summary of findings",\n'
                 '  "explanation": "Detailed explanation of recommendations and compatibility",\n'
-                '  "recommended_facilities": [{"facility": "Name", "units": 0, "blood_group": "A+", "distance_sq": 0.0}]\n'
+                '  "recommended_facilities": [\n'
+                '    {\n'
+                '      "facility_id": 1,\n'
+                '      "facility_name": "Name",\n'
+                '      "facility_address": "Address",\n'
+                '      "distance_km": 0.0,\n'
+                '      "available_units": 0,\n'
+                '      "blood_group": "A+",\n'
+                '      "component_type": "Packed RBC"\n'
+                '    }\n'
+                '  ]\n'
                 "}\n"
                 "Return ONLY the JSON string. Do not include markdown formatting like ```json."
             )
@@ -84,7 +102,8 @@ class InventoryAgent:
             response_text = ai_client.generate(
                 prompt=analysis_prompt,
                 agent_name="inventory",
-                system_instruction=self.prompt
+                system_instruction=self.prompt,
+                context_params=context_params
             ).strip()
             
             # Clean up potential markdown formatting from LLM

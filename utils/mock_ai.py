@@ -1,91 +1,96 @@
 import json
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from utils.logger import logger
 
-def generate_mock_response(agent_name: str, prompt: str) -> Dict[str, Any]:
+def generate_mock_response(agent_name: str, prompt: str, context_params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
     Generate deterministic mock responses for testing without calling Gemini.
-    Returns dictionaries matching each agent's expected output format.
+    Returns dictionaries matching each agent's expected output format using real context parameters.
     """
-    logger.info(f"Generating mock response for agent: {agent_name}")
+    logger.info(f"Generating contextual mock response for agent: {agent_name}")
     
     agent_name = agent_name.lower().strip()
+    ctx = context_params or {}
+    
+    # Extract defaults from context_params
+    blood_group = ctx.get("blood_group", "O-")
+    component_type = ctx.get("component_type", "Packed RBC")
+    req_units = ctx.get("required_units", 1)
+    patient_condition = ctx.get("patient_condition", "Unknown condition")
+    priority_tier = ctx.get("requested_priority", "TIER_2_URGENT")
+    priority_label = "Immediate (Tier 1)" if priority_tier == "TIER_1_IMMEDIATE" else "High (Urgent)"
+    
+    # Safely extract from injected operational DB data
+    raw_inventory = ctx.get("raw_inventory", [])
+    rec_data = ctx.get("recommendation_data", {})
+    options = rec_data.get("options", [])
+    
+    facility_name = "Unknown Facility"
+    facility_address = "Mock Address, City"
+    distance_km = 0.0
+    actual_units = req_units
+    
+    if options:
+        best_fac = options[0]
+        facility_name = best_fac.get("facility_name", facility_name)
+        facility_address = best_fac.get("facility_address", facility_address)
+        distance_km = best_fac.get("distance_km", 0.0)
+        actual_units = best_fac.get("available_units", req_units)
+    elif raw_inventory:
+        best_fac = raw_inventory[0]
+        facility_name = best_fac.get("facility_name", facility_name)
+        facility_address = best_fac.get("facility_address", facility_address)
+        distance_km = best_fac.get("distance_km", 0.0)
+        actual_units = best_fac.get("available_units", req_units)
+        
+    facility_name = ctx.get("location", facility_name) if facility_name == "Unknown Facility" else facility_name
     
     if agent_name == "eligibility":
-        prompt_lower = prompt.lower()
-        if any(term in prompt_lower for term in ["age below 18", "16 year", "17 year", "underweight", "low hemoglobin"]):
-            return {
-                "eligibility": "Temporary Deferral",
-                "reason": "Does not meet minimum WHO criteria",
-                "next_eligible_date": "2027-01-01",
-                "explanation": "Donor is deferred based on age, weight, or hemoglobin levels."
-            }
-        else:
-            return {
-                "eligibility": "Eligible",
-                "reason": "Meets all WHO criteria",
-                "next_eligible_date": "N/A",
-                "explanation": "Donor is fully eligible based on age, weight, and hemoglobin levels."
-            }
+        return {
+            "status": "Success",
+            "eligibility": "Eligible",
+            "reason": "Mock donor meets all WHO criteria based on contextual parameters."
+        }
         
     elif agent_name == "priority":
-        user_request_line = ""
-        for line in prompt.split('\n'):
-            if line.startswith("User Request:"):
-                user_request_line = line.lower()
-                break
-                
-        if any(term in user_request_line for term in ["hemorrhage", "massive bleeding", "birthing mother"]):
-            return {
-                "priority": "TIER_1_IMMEDIATE",
-                "reason": "Active hemorrhage or critical condition detected.",
-                "who_explanation": "Under WHO triage rules, this requires immediate life-saving intervention (Tier 1)."
-            }
-        elif "thalassemia" in user_request_line:
-            return {
-                "priority": "TIER_3_ROUTINE",
-                "reason": "Routine transfusion need.",
-                "who_explanation": "Under WHO triage rules, routine scheduled transfusions map to Tier 3."
-            }
-        elif "elective surgery" in user_request_line:
-            return {
-                "priority": "TIER_4",
-                "reason": "Elective surgery request.",
-                "who_explanation": "Elective surgeries are lowest priority (Tier 4) according to WHO guidelines."
-            }
-        else:
-            return {
-                "priority": "TIER_2_URGENT",
-                "reason": "Default urgent classification",
-                "who_explanation": "Fell back to Tier 2."
-            }
+        return {
+            "status": "Success",
+            "priority_tier": priority_tier,
+            "priority_label": priority_label,
+            "reason": f"Mock assessed priority based on condition: {patient_condition}."
+        }
         
     elif agent_name == "inventory":
         return {
             "status": "Success",
-            "summary": "Mock inventory search completed successfully.",
-            "explanation": "Found 5 units of matching blood group in nearby facilities.",
+            "summary": f"Found {actual_units} units of {blood_group} {component_type}.",
+            "explanation": f"Inventory search confirmed availability of {blood_group} at {facility_name}.",
             "recommended_facilities": [
-                {"facility": "Central Hospital", "units": 5, "blood_group": "O-", "distance_sq": 2.5}
+                {
+                    "facility_id": 1,
+                    "facility_name": facility_name,
+                    "facility_address": facility_address,
+                    "available_units": actual_units,
+                    "blood_group": blood_group,
+                    "component_type": component_type,
+                    "distance_km": distance_km
+                }
             ]
         }
         
     elif agent_name == "recommendation":
         return {
-            "top_recommendation": {"facility": "Central Hospital", "blood_group": "O-", "units": 5},
-            "alternatives": [
-                {"facility": "North Clinic", "blood_group": "O-", "units": 2}
-            ],
-            "reasoning": "Central Hospital is closest and has sufficient stock of the exact blood group requested."
+            "status": "Success",
+            "recommendation": f"Proceed with reservation of {req_units} units at {facility_name}."
         }
         
     elif agent_name == "notification":
         return {
             "status": "Success",
-            "donors_notified": 3,
-            "sample_sms": "URGENT: Blood needed at Central Hospital. Please donate today.",
-            "sample_email": "Dear Donor, your blood type is urgently needed at Central Hospital...",
-            "summary": "Successfully targeted 3 eligible donors who haven't donated in 90 days."
+            "notification_required": True,
+            "target_facility": facility_name,
+            "blood_group": blood_group,
+            "message": f"URGENT: Blood needed at {facility_name}. Please donate {blood_group}."
         }
         
     elif agent_name == "supervisor":

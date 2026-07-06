@@ -1,6 +1,6 @@
 import json
 import google.generativeai as genai
-from typing import Optional
+from typing import Optional, Dict, Any
 from config.settings import settings
 from utils.logger import logger
 from utils.mock_ai import generate_mock_response
@@ -13,7 +13,7 @@ if not settings.USE_MOCK_AI:
     except Exception as e:
         logger.error(f"Failed to configure Gemini: {e}")
 
-def generate(prompt: str, agent_name: str = "general", system_instruction: Optional[str] = None) -> str:
+def generate(prompt: str, agent_name: str = "general", system_instruction: Optional[str] = None, context_params: Optional[Dict[str, Any]] = None) -> str:
     """
     Generate a response from the AI.
     If USE_MOCK_AI is True, it returns a deterministic mock response (as a JSON string).
@@ -24,7 +24,7 @@ def generate(prompt: str, agent_name: str = "general", system_instruction: Optio
     if settings.USE_MOCK_AI:
         try:
             logger.debug(f"Using mock AI for {agent_name}")
-            mock_dict = generate_mock_response(agent_name, prompt)
+            mock_dict = generate_mock_response(agent_name, prompt, context_params)
             return json.dumps(mock_dict)
         except Exception as e:
             logger.error(f"Error generating mock response: {e}")

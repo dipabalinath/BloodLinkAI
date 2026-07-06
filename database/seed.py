@@ -142,11 +142,20 @@ def seed_db():
     print("Seeding ancillary records (Reservations, Notifications, Audits, Emergencies)...")
     
     # Emergency Events
-    cursor.execute("""
-        INSERT INTO EmergencyEvent 
-        (event_name, location_city, severity_level, is_active, expected_units, affected_population)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, ("Mass Transit Accident", "Kolkata", "Critical", 1, 150, 50))
+    emergencies_data = [
+        ("Mass Transit Accident", "Kolkata", "Critical", 1, 150, 50, 22.5726, 88.3639),
+        ("Industrial Explosion", "Howrah", "Critical", 1, 100, 30, 22.5958, 88.2636),
+        ("Flood Disaster", "Salt Lake", "High", 1, 200, 100, 22.5867, 88.4170),
+        ("Building Collapse", "Kolkata", "High", 1, 80, 20, 22.5600, 88.3700),
+        ("Train Derailment", "Sealdah", "Critical", 1, 120, 40, 22.5697, 88.3697)
+    ]
+    
+    for emg in emergencies_data:
+        cursor.execute("""
+            INSERT INTO EmergencyEvent 
+            (event_name, location_city, severity_level, is_active, expected_units, affected_population, latitude, longitude)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, emg)
     
     # Audit Logs & Notifications
     for _ in range(50):
@@ -164,12 +173,15 @@ def seed_db():
 
     # Reservations
     for req_id in random.sample(requests, 20):
-        cursor.execute("""
-            INSERT INTO Reservation 
-            (request_id, inventory_id, reserved_units, status)
-            VALUES (?, ?, ?, ?)
-        """, (req_id, random.choice(inventories), random.randint(1, 3), "Active"))
-
+        # Create 1 to 3 reservations for this request to simulate 1:N relation
+        num_reservations = random.randint(1, 3)
+        for _ in range(num_reservations):
+            cursor.execute("""
+                INSERT INTO Reservation 
+                (request_id, inventory_id, reserved_units, status)
+                VALUES (?, ?, ?, ?)
+            """, (req_id, random.choice(inventories), random.randint(1, 3), "Active"))
+            
     conn.commit()
     db.close()
     print("Database seeding completed successfully.")

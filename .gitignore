@@ -1,6 +1,43 @@
-venv/
-.venv/
+# Python
 __pycache__/
 *.pyc
-.env
+*.pyo
+*.pyd
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Pytest
 .pytest_cache/
+
+# Coverage
+.coverage
+htmlcov/
+
+# Temporary
+temp/
+tmp/
+
+# Environment
+.env
